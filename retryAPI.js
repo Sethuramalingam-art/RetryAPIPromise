@@ -1,3 +1,51 @@
+//test function
+//return success/fail based on retries values
+//Implement a function in JavaScript that retries promises N number of times
+let testPromise = () => {
+  let count = 0;
+  return () => {
+    return new Promise((resolve, reject) => {
+      count += 1;
+      if (count <= 5) {
+        reject("I am failed API");
+      } else {
+        resolve("I am successfull");
+      }
+    });
+  };
+};
+
+const retry = async (fn, retires, finalErr) => {
+  try {
+    const response = await fn();
+    return response;
+  } catch (err) {
+    if (retires === 1) {
+      return Promise.reject(finalErr);
+    }
+
+    return retry(fn, retires - 1, finalErr);
+  }
+};
+retry(testPromise(), 6, "I am failure")
+  .then((val) => {
+    console.log(val);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+// I am successfull if retires count 6
+retry(testPromise(), 5, "I am failure")
+  .then((val) => {
+    console.log(val);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+// I am failure if retires count 5 or less than 5
+
+=============================================================================
+
 //Implement a function in JavaScript that retries promises N number of times with a delay between each call.
 
 Input:
